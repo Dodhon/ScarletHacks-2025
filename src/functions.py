@@ -20,31 +20,33 @@ def calculate_cosine_similarity(user_profile, event_profile):
 def generate_random_profile(size):
     return np.random.randint(0, 10, size=size).astype(float)
 
-def calculate_new_user_info(current_user_profile, list_of_selected_events, lr=0.1):
-    average_selected_vector = np.mean(list_of_selected_events, axis=0)
-    print(f"Calculated average vector (first 5): {average_selected_vector[:5]}...")
-    
+def calculate_new_user_info(current_user_profile, selected_event, lr=0.1):
     current_user_profile = np.array(current_user_profile)
-    new_user_profile = (1.0 - lr) * current_user_profile + lr * average_selected_vector
-    
-    print(f"New user profile (first 5): {new_user_profile[:5]}...")
+    new_user_profile = (1.0 - lr) * current_user_profile + lr * selected_event
     
     return new_user_profile
 
 if __name__ == "__main__":
     PROFILE_DIM = 10
     FIXED_LR = 0.1
+    NUM_AVAILABLE_EVENTS = 15 
+    NUM_ITERATIONS = 5 
     
+    # Initialize user profil
     user_profile = generate_random_profile(PROFILE_DIM)
-    selected_events = [] 
 
-    print(f"Initial user profile (first 5): {user_profile[:5]}...")
+    available_events = [generate_random_profile(PROFILE_DIM) for _ in range(NUM_AVAILABLE_EVENTS)]
 
-    for _ in range(5): 
-        selected_event = generate_random_profile(PROFILE_DIM)
-        selected_events.append(selected_event)
-        print(f"Selected event added. Total selected: {len(selected_events)}")
-        user_profile = calculate_new_user_info(user_profile, selected_events, FIXED_LR)
+    for i in range(NUM_ITERATIONS):
+    
+        similarities = [calculate_cosine_similarity(user_profile, event) for event in available_events]
 
-    else:
-        print("No events met the selection criteria.")
+        
+        most_similar_event_index = np.argmax(similarities)
+        selected_event = available_events[most_similar_event_index]
+        highest_similarity = similarities[most_similar_event_index]
+
+        
+        user_profile = calculate_new_user_info(user_profile, selected_event, FIXED_LR)
+
+    print(f"\nFinal user profile after {NUM_ITERATIONS} iterations (first 5): {user_profile[:5]}...")
