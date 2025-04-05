@@ -1,4 +1,5 @@
 import math
+
 def cosine_similarity(user_profile, event_profile):
     return calculate_cosine_similarity(user_profile, event_profile)
 
