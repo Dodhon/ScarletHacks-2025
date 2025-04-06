@@ -1,1 +1,1 @@
-pip install -e . to set up project
+!pip install -r requirements.txt
