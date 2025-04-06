@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+
 from app.routes import user_routes, swipe_routes, event_routes
 from app.middleware import auth
+
 from fastapi.middleware.cors import CORSMiddleware
 from app.config.db import connect_to_mongo, close_mongo_connection
 
@@ -21,7 +23,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # Include application routers
+
 app.include_router(user_routes.router)
 app.include_router(auth.router)
 app.include_router(swipe_routes.router)

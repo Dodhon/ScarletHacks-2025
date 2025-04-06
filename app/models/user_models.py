@@ -8,7 +8,9 @@ class UserPublic(BaseModel):
     username: str
     email: Optional[str] = None
     full_name: Optional[str] = None
+
     disabled: Optional[bool] = None
+
 
     class Config:
         populate_by_name = True
@@ -32,5 +34,7 @@ class UserCreate(BaseModel):
 class UserInDB(UserPublic):
     hashed_password: str
 
+
     class Config:
         populate_by_name = True 
+

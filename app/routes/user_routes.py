@@ -5,7 +5,9 @@ from typing import List
 import logging
 
 from app.users.user_functions import get_user, get_users
+
 from app.models.user_models import UserPublic, UserInDB, UserCreate
+
 from app.middleware.auth_functions import get_password_hash
 from app.config.db import get_db
 from app.middleware.auth import get_current_user
@@ -34,8 +36,10 @@ async def read_users(db: AsyncIOMotorDatabase = Depends(get_db)):
     users_in_db = await get_users(db=db)
     return users_in_db
 
+
 @router.post("/register", response_model=UserPublic)
 async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
+
     """Register a new user."""
     existing_user = await get_user(db=db, username=user.username)
     if existing_user:

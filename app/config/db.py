@@ -1,8 +1,10 @@
 import logging
+
 # Change pymongo imports to motor
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase 
 # from pymongo import MongoClient
 # from pymongo.database import Database
+
 from pymongo.server_api import ServerApi
 from app.utils.load_env import get_db_connect, get_db_name
 
@@ -48,7 +50,9 @@ def get_db() -> AsyncIOMotorDatabase:
         raise Exception("Database name not configured.")
         
     try:
+
         return _mongo_client[db_name]
+
     except Exception as e:
         logging.exception(f"Could not get async database '{db_name}': {e}")
         raise Exception(f"Could not get async database '{db_name}'") from e
@@ -56,7 +60,9 @@ def get_db() -> AsyncIOMotorDatabase:
 # Note: connect_to_mongo should be called in FastAPI startup event handler
 # And close_mongo_connection in shutdown event handler.
 
+
 # Optional: Call connect_to_mongo here if you want the connection 
 # established when this module is imported, but it's better 
 # practice to use FastAPI startup events.
 # connect_to_mongo() 
+
