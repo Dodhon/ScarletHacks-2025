@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 from pydantic import BaseModel
 from app.users.user_functions import get_user, get_users
-from app.models.user_models import UserPublic, UserRegistering
+from app.models.user_models import User, UserPublic, UserRegistering
 from app.middleware.auth_functions import get_password_hash
 from app.config.db import get_mongo_client, get_database
 
@@ -13,7 +13,7 @@ router = APIRouter()
 mongo_client = get_mongo_client()
 db = get_database(mongo_client, "match_cause_db")
 
-@router.get("/users/{username}", tags=["users"], response_model=UserPublic)
+@router.get("/users/{username}", tags=["users"], response_model=User)
 async def user_profile(username: str):
     """Fetch a user's profile by username."""
     user = get_user(username)
