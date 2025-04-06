@@ -1,22 +1,36 @@
+import logging
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
-import os
-from dotenv import load_dotenv
+from app.utils.load_env import get_db_connect
 
-load_dotenv()
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-password = os.environ.get("DB_PASSWORD") 
-if not password:
-    raise ValueError("MongoDB password not found in environment variable DB_PASSWORD")
+def get_mongo_client():
+    """
+    Establishes and returns a MongoDB client.
+    """
+    uri = get_db_connect()
+    if not uri:
+        logging.error("MongoDB connection URI not found.")
+        return None
+    
+    try:
+        client = MongoClient(uri, server_api=ServerApi('1'))
+        client.admin.command('ping')
+        logging.info("Successfully connected to MongoDB.")
+        return client
+    except Exception as e:
+        logging.error(f"Failed to connect to MongoDB: {e}")
+        return None
 
-uri = os.environ.get("DB_CONNECTION_STRING")
+def get_database(client, db_name):
+    """
+    Retrieves a specific database from the client.
+    """
+    if client:
+        return client[db_name]
+    else:
+        logging.error("MongoDB client is not available.")
+        return None
 
-# Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
-
-# Send a ping to confirm a successful connection
-try:
-    client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-    print(e)
+get_mongo_client()

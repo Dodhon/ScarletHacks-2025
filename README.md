@@ -1,0 +1,1 @@
+pip install -e . to set up project
