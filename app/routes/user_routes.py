@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 from pydantic import BaseModel
 from app.users.user_functions import get_user, get_users
-from app.models.user_models import UserPublic, UserInDB
+from app.models.user_models import UserPublic, UserRegistering
 from app.middleware.auth_functions import get_password_hash
 from app.config.db import get_mongo_client, get_database
 
@@ -30,8 +30,8 @@ async def users():
     return users
 
 
-@router.post("/users/register", response_model=UserPublic)
-async def register(user: UserInDB):
+@router.post("/users/register", tags=["users"], response_model=UserPublic)
+async def register(user: UserRegistering):
     """Register a new user."""
     existing_user = get_user(user.username)
     if existing_user:

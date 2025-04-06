@@ -7,8 +7,10 @@ class UserPublic(BaseModel):
 class User(UserPublic):
     email: Optional[str] = None
     full_name: Optional[str] = None
-    disabled: Optional[bool] = None
     embedding: List[float] = []
 
 class UserInDB(User):
     hashed_password: str
+
+class UserRegistering(User):
+    password: str
