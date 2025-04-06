@@ -1,45 +1,34 @@
-from motor.motor_asyncio import AsyncIOMotorDatabase
-from app.models.user_models import UserPublic, UserInDB
+from app.models.user_models import UserPublic, User, UserInDB
 from typing import List
+from app.config.db import get_mongo_client, get_database
 import logging
 
+mongo_client = get_mongo_client()
+db = get_database(mongo_client, "match_cause_db")
 
-async def get_user(db: AsyncIOMotorDatabase, username: str) -> UserInDB | None:
-    """Fetches a user from the DB by username."""
+
+def get_user(username: str):
+    """Fetches the user from the MongoDB database by username."""
     if db is None:
-        logging.error("DB connection is None in get_user.")
+        logging.error("Database connection is unavailable.")
         return None
     try:
-        user_data = await db["users"].find_one({"username": username})
-        if user_data:
-            # Convert _id before Pydantic validation
-            user_data["_id"] = str(user_data["_id"])
-            return UserInDB(**user_data)
-        else:
-            # It's okay if user not found, return None
-            return None
-    except Exception as e:
-        logging.exception(f"Error fetching user '{username}': {e}")
-        return None # Return None on error
+        user_data = db["users"].find_one({"username": username})
+        return UserInDB(**user_data)
+    except:
+        logging.error("User not found.")
+        return None
 
-async def get_users(db: AsyncIOMotorDatabase) -> List[UserInDB]:
+def get_users() -> List[User]:
     """Fetches all users from the database."""
     if db is None:
-        logging.error("DB connection is None in get_users.")
+        logging.error("Database connection is unavailable.")
         return []
 
-    users = []
     try:
-        users_data_cursor = db["users"].find({})
-        async for user_data in users_data_cursor:
-            try:
-                # Convert _id before Pydantic validation
-                user_data["_id"] = str(user_data["_id"])
-                users.append(UserInDB(**user_data))
-            except Exception as parse_e:
-                logging.error(f"Error parsing user data for _id {user_data.get('_id')}: {parse_e}")
-                # Optionally skip this user or raise an error
+        users_data = db["users"].find({})
+        users = [User(**user) for user in users_data]
         return users
     except Exception as e:
-        logging.exception(f"Error fetching users from database: {e}")
-        return [] # Return empty list on error
+        logging.error(f"Error fetching users from database: {e}")
+        return []

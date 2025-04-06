@@ -16,7 +16,3 @@ def get_JWT_key():
 def get_algo():
     load_dotenv()
     return os.getenv("ALGO")
-
-def get_db_name():
-    load_dotenv()
-    return os.getenv("DB_NAME")
