@@ -1,4 +1,5 @@
 import logging
+import certifi
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from app.utils.load_env import get_db_connect
@@ -15,7 +16,12 @@ def get_mongo_client():
         return None
     
     try:
-        client = MongoClient(uri, server_api=ServerApi('1'))
+        client = MongoClient(
+            uri,
+            server_api=ServerApi('1'),
+            tls=True,
+            tlsCAFile=certifi.where()
+        )
         client.admin.command('ping')
         logging.info("Successfully connected to MongoDB.")
         return client
