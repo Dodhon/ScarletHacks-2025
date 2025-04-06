@@ -4,11 +4,12 @@ from typing import List
 class Cause(BaseModel):
     name: str
     location: str
-    data: str
+    date: str
     time: str
     description: str
     category: List[str]
     link: str
+    embedded: List[float] = []
     
 class Coordinates(BaseModel):
     lat: float
