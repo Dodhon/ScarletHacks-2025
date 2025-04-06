@@ -11,7 +11,7 @@ def get_maps_key():
 
 def get_JWT_key():
     load_dotenv()
-    return os.getenv("JWT_KEY")
+    return os.getenv("JWT_SECRET")
 
 def get_algo():
     load_dotenv()
