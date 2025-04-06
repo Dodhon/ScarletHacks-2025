@@ -7,6 +7,8 @@ class UserPublic(BaseModel):
 class User(UserPublic):
     email: Optional[str] = None
     full_name: Optional[str] = None
+    address: Optional[str] = None
+    dob: Optional[str] = None
     embedding: List[float] = []
 
 class UserInDB(User):
@@ -14,3 +16,10 @@ class UserInDB(User):
 
 class UserRegistering(User):
     password: str
+
+class UpdateVectorRequest(BaseModel):
+    username: str
+    user_vector: List[float]
+    event_vector: List[float]
+    swipe: bool
+    alpha: float = 0.1
